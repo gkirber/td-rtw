@@ -1,12 +1,79 @@
-# React + Vite
+# TD-RTW
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern task management application (Todo) built with cutting-edge web technologies.
 
-Currently, two official plugins are available:
+## 🚀 Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<div align="center">
 
-## Expanding the ESLint configuration
+![React](https://img.shields.io/badge/React-19.1.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1.12-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-9.33.0-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+</div>
+
+## 📱 About the Application
+
+TD-RTW is a simple and efficient task manager that allows you to:
+
+- Create new tasks
+- Mark completed tasks
+- Delete tasks
+- Save task state locally
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/gkirber/td-rtw
+cd td-rtw
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Available Commands
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview build
+- `npm run lint` - Run ESLint
+
+## 📁 Project Structure
+
+```
+src/
+├── components/        # React components
+│   ├── AddTodo.jsx    # Task addition component
+│   └── TodoItem.jsx   # Task item component
+├── assets/            # Static resources
+├── App.jsx            # Main application component
+└── main.jsx           # Application entry point
+```
+
+## 🌟 Features
+
+- Modern React 19 with hooks
+- Fast Vite build tool
+- TailwindCSS styling
+- ESLint code quality enforcement
+- Responsive design
+- Local data storage
+
+## 🚀 Quick Start
+
+After running `npm run dev`, open your browser at `http://localhost:5173`
+
+
+
