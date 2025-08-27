@@ -74,6 +74,3 @@ src/
 ## 🚀 Quick Start
 
 After running `npm run dev`, open your browser at `http://localhost:5173`
-
-
-
