@@ -6,25 +6,40 @@ import { getInitialTheme } from './helpers/getInitialTheme'
 import { toggleTheme } from './helpers/toggleTheme'
 
 function App() {
-	const initialTodos = [
-		{ id: 1, text: 'Buy groceries' },
-		{ id: 2, text: 'Finish homework' },
-		{ id: 3, text: 'Call mom' },
-	]
-
-	const [todos, setTodos] = useState(initialTodos)
+	const [todos, setTodos] = useState([])
 	const [theme, setTheme] = useState(getInitialTheme())
 
-	const onAdd = text => {
+	const onAdd = (text, deadline) => {
 		const newTodo = {
 			id: Date.now(),
 			text,
+			completed: false,
+			createdAt: new Date().toISOString(),
+			deadline: deadline || null,
+			order: todos.length + 1,
 		}
 		setTodos([...todos, newTodo])
 	}
 
-	const onDelete = id => {
-		setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id))
+	const toggleComplete = id => {
+		const todoToUpdate = todos.find(todo => todo.id === id)
+
+		if (!todoToUpdate) return
+
+		const updatedTodo = {
+			...todoToUpdate,
+			completed: !todoToUpdate.completed,
+		}
+
+		const updatedTodos = todos.map(todo =>
+			todo.id === id ? updatedTodo : todo
+		)
+
+		setTodos(updatedTodos)
+	}
+
+	const onDelete = (id) => {
+		setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id))
 	}
 
 	return (
@@ -42,7 +57,12 @@ function App() {
 				<AddTodo onAdd={onAdd} />
 				<div className='flex flex-col gap-3'>
 					{todos.map(todo => (
-						<TodoItem key={todo.id} todo={todo} onDelete={onDelete} />
+						<TodoItem
+							key={todo.id}
+							todo={todo}
+							onDelete={onDelete}
+							onToggleComplete={toggleComplete}
+						/>
 					))}
 				</div>
 			</div>
