@@ -4,14 +4,10 @@ A modern task management application (Todo) built with cutting-edge web technolo
 
 ## 🚀 Technologies
 
-<div align="center">
-
 ![React](https://img.shields.io/badge/React-19.1.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1.12-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![ESLint](https://img.shields.io/badge/ESLint-9.33.0-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
-
-</div>
 
 ## 📱 About the Application
 
@@ -52,7 +48,7 @@ npm run dev
 
 ## 📁 Project Structure
 
-```
+```text
 src/
 ├── components/        # React components
 │   ├── AddTodo.jsx    # Task addition component

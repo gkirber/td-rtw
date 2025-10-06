@@ -1,27 +1,78 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AddTodo } from './components/AddTodo'
+import DeleteConfirmModal from './components/DeleteConfirmModal'
 import { TodoItem } from './components/TodoItem'
 import ToggleTheme from './components/ToggleTheme'
 import { getInitialTheme } from './helpers/getInitialTheme'
 import { toggleTheme } from './helpers/toggleTheme'
 
+const LOCAL_STORAGE_KEY = 'todos'
+const API_URL = 'https://68b4a68045c901678770dd32.mockapi.io/api/v1/todos'
+
 function App() {
 	const [todos, setTodos] = useState([])
 	const [theme, setTheme] = useState(getInitialTheme())
+	const [deletingId, setDeletingId] = useState(null)
+	const [isDeletingCompleted, setIsDeletingCompleted] = useState(false)
 
-	const onAdd = (text, deadline) => {
+	useEffect(() => {
+		const loadInitialData = async () => {
+			const savedTodos = JSON.parse(
+				localStorage.getItem(LOCAL_STORAGE_KEY) || '[]'
+			)
+
+			setTodos(savedTodos)
+
+			try {
+				const response = await fetch(API_URL)
+
+				if (response.ok) {
+					const serverTodos = await response.json()
+					setTodos(serverTodos)
+					localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(serverTodos))
+				}
+			} catch (error) {
+				console.error('Error loading initial data:', error)
+			}
+		}
+		loadInitialData()
+	}, [])
+
+	const onAdd = async (text, deadline) => {
 		const newTodo = {
-			id: Date.now(),
+			id: `temp_${Date.now()}`,
 			text,
 			completed: false,
 			createdAt: new Date().toISOString(),
 			deadline: deadline || null,
 			order: todos.length + 1,
 		}
-		setTodos([...todos, newTodo])
+
+		const updatedTodos = [...todos, newTodo]
+		setTodos(updatedTodos)
+
+		try {
+			const response = await fetch(API_URL, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(newTodo),
+			})
+
+			const createdTodo = await response.json()
+
+			const syncedTodos = updatedTodos.map(todo =>
+				todo.id === newTodo.id ? createdTodo : todo
+			)
+
+			setTodos(syncedTodos)
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(syncedTodos))
+		} catch (error) {
+			console.error('Error adding todo:', error)
+			setTodos(todos)
+		}
 	}
 
-	const toggleComplete = id => {
+	const toggleComplete = async id => {
 		const todoToUpdate = todos.find(todo => todo.id === id)
 
 		if (!todoToUpdate) return
@@ -36,10 +87,71 @@ function App() {
 		)
 
 		setTodos(updatedTodos)
+
+		try {
+			await fetch(`${API_URL}/${id}`, {
+				method: 'PUT',
+
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(updatedTodo),
+			})
+
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos))
+		} catch (error) {
+			console.error('Error updating todo:', error)
+			setTodos(todos)
+		}
 	}
 
-	const onDelete = (id) => {
-		setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id))
+	const handleDelete = async id => {
+		const previousTodos = todos
+		const updatedTodos = todos.filter(todo => todo.id !== id)
+		setTodos(updatedTodos)
+
+		try {
+			await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos))
+		} catch (error) {
+			console.error('Error deleting todo:', error)
+			setTodos(previousTodos)
+		}
+	}
+
+	const hasCompletedTodos = todos.some(todo => todo.completed)
+
+	const handleDeleteCompleted = () => {
+		if (!hasCompletedTodos) return
+		setIsDeletingCompleted(true)
+	}
+
+	const confirmDeleteCompleted = async () => {
+		const originalTodos = [...todos]
+
+		const completedIds = originalTodos.filter(t => t.completed).map(t => t.id)
+
+		setTodos(originalTodos.filter(todo => !todo.completed))
+
+		const failedIds = []
+
+		for (const id of completedIds) {
+			try {
+				await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+			} catch (error) {
+				console.error(`Error deleting completed task ${id}:`, error)
+				failedIds.push(id)
+			}
+		}
+
+		if (failedIds.length > 0) {
+			setTodos(
+				originalTodos.filter(
+					(todo) => !todo.completed || failedIds.includes(todo.id)
+				)
+			)
+		}
+
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))
+			setIsDeletingCompleted(false)
 	}
 
 	return (
@@ -60,12 +172,37 @@ function App() {
 						<TodoItem
 							key={todo.id}
 							todo={todo}
-							onDelete={onDelete}
+							onDelete={() => setDeletingId(todo.id)}
 							onToggleComplete={toggleComplete}
 						/>
 					))}
 				</div>
 			</div>
+			{deletingId && (
+				<DeleteConfirmModal
+					onCancel={() => setDeletingId(null)}
+					onConfirm={() => {
+						handleDelete(deletingId)
+						setDeletingId(null)
+					}}
+					message='Are you sure you want to delete this task?'
+				/>
+			)}
+			{isDeletingCompleted && (
+				<DeleteConfirmModal
+					onCancel={() => setIsDeletingCompleted(false)}
+					onConfirm={confirmDeleteCompleted}
+					message={`Are you sure you want to delete all completed tasks (${todos.filter(todo => todo.completed).length})?`}
+				/>
+			)}
+			{hasCompletedTodos && (
+				<button
+					onClick={handleDeleteCompleted}
+					className='px-4 py-2 mt-4 bg-red-500 text-white rounded hover:bg-red-600 transition-colors cursor-pointer'
+				>
+					Clear Completed Tasks
+				</button>
+			)}
 		</div>
 	)
 }
