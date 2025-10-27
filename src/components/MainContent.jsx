@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "./Header";
 import { AddTodo } from "./AddTodo";
-import TodoList from "./Todolist"; // Fixed casing to match actual file
+import TodoList from "./TodoList";
 import TodoFilter from "./TodoFilter";
 
 const MainContent = ({
