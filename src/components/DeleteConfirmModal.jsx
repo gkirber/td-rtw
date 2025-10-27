@@ -13,7 +13,7 @@ const DeleteConfirmModal = ({
 				<div className='absolute inset-0 bg-black/50 z-4 backdrop-blur-xs'></div>
 				<div className='relative flex h-full items-center justify-center p-4 z-5'>
 					<div className='p-6 rounded-lg shadow-xl max-w-md w-full mx-4 bg-white text-gray-800 dark:bg-gray-800 dark:text-white'>
-						<h3 className='text-xl font-bold mb-4'>Delete confirmation</h3>
+						<h3 className='text-xl font-bold mb-4'>Delete Confirmation</h3>
 						<p className='mb-6'>{message}</p>
 						<div className='flex justify-end gap-3'>
 							<button

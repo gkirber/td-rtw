@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "./Header";
 import { AddTodo } from "./AddTodo";
-import TodoList from "./TodoList";
+import TodoList from "./Todolist"; // Fixed casing to match actual file
 import TodoFilter from "./TodoFilter";
 
 const MainContent = ({
@@ -10,6 +10,7 @@ const MainContent = ({
   handleUpdate,
   toggleComplete,
   setDeletingId,
+  onReorder,
 }) => {
   const [filter, setFilter] = useState("all");
 
@@ -28,6 +29,7 @@ const MainContent = ({
         handleUpdate={handleUpdate}
         toggleComplete={toggleComplete}
         setDeletingId={setDeletingId}
+        onReorder={onReorder}
       />
     </div>
   );
