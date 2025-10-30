@@ -68,7 +68,7 @@ export function AddTodo({ onAdd }) {
 				}
 
 				recognitionInstance.onerror = event => {
-					console.error('Speech recognition error:', event.error)
+					console.error('Recognition error:', event.error)
 					stopListening()
 				}
 
@@ -98,12 +98,14 @@ export function AddTodo({ onAdd }) {
 			setDeadline('')
 			setShowDeadlineInput('')
 			finalTextRef.current = ''
+		} else {
+			alert('Please enter a task')
 		}
 	}
 
 	return (
 		<form onSubmit={handleSubmit} className='mb-6'>
-			<div className='flex items-center bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 focus-within:ring-2 focus-within:ring-blue-500'>
+			<div className='flex flex-col min-[375px]:flex-row items-center bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 focus-within:ring-2 focus-within:ring-blue-500 dark:bg-page-dark dark:text-txt-dark '>
 				<input
 					type='text'
 					value={text}
@@ -111,37 +113,39 @@ export function AddTodo({ onAdd }) {
 						setText(e.target.value)
 					}}
 					placeholder='Add a task...'
-					className='flex-1 p-3 text-gray-200 dark:bg-page-dark dark:text-txt-dark outline-none placeholder-gray-400'
+					className='flex-1 p-3 text-gray-200 outline-none placeholder-gray-400'
 				/>
-				<button
-					type='button'
-					onClick={toggleListening}
-					className={`cursor-pointer p-3 ${
-						isListening
-							? 'bg-red-500 hover:bg-red-700'
-							: 'bg-gray-200 hover:bg-gray-300'
-					}  transition-colors duration-300 flex items-center justify-center`}
-					title={isListening ? 'Stop recording' : 'Start voice input'}
-				>
-					<img
-						src={MicrophoneIcon}
-						alt='Microphone'
-						className={`w-6 h-6 ${
-							isListening ? 'filter brightness-0 invert' : ''
-						}`}
-					/>
-				</button>
-				<button
-					type='submit'
-					className={`p-3 ${
-						isListening
-							? 'bg-gray-400 cursor-not-allowed'
-							: 'bg-btn-light hover:bg-btn-light-hv cursor-pointer'
-					}  text-white dark:bg-btn-dark hover:dark:bg-btn-dark-hv transition-colors duration-300 `}
-					disabled={isListening}
-				>
-					<PlusIcon />
-				</button>
+				<div className='flex items-center w-full justify-end max-[374px]:justify-center border-1 min-[375px]:border-0'>
+					<button
+						type='button'
+						onClick={toggleListening}
+						className={`cursor-pointer p-3 ${
+							isListening
+								? 'bg-red-500 hover:bg-red-700'
+								: 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-500 hover:dark:bg-gray-700'
+						}  transition-colors duration-300 flex items-center justify-center`}
+						title={isListening ? 'Stop recording' : 'Start voice recording'}
+					>
+						<img
+							src={MicrophoneIcon}
+							alt='Microphone'
+							className={`w-6 h-6 ${
+								isListening ? 'filter brightness-0 invert' : ''
+							}`}
+						/>
+					</button>
+					<button
+						type='submit'
+						className={`p-3 ${
+							isListening
+								? 'bg-gray-400 cursor-not-allowed'
+								: 'bg-btn-light hover:bg-btn-light-hv cursor-pointer'
+						}  text-white dark:bg-btn-dark hover:dark:bg-btn-dark-hv transition-colors duration-300 `}
+						disabled={isListening}
+					>
+						<PlusIcon />
+					</button>
+				</div>
 			</div>
 			<DeadlineBlock
 				showDeadlineInput={showDeadlineInput}
